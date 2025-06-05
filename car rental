@@ -1,0 +1,204 @@
+package loginsystem;
+
+import java.util.ArrayList;
+import java.util.List;
+
+// Car class
+class Car {
+    private String licensePlate;
+    private String make;
+    private String model;
+    private int year;
+    private boolean isRented;
+
+    public Car(String licensePlate, String make, String model, int year) {
+        this.licensePlate = licensePlate;
+        this.make = make;
+        this.model = model;
+        this.year = year;
+        this.isRented = false;
+    }
+
+    // Getters and setters
+    public String getLicensePlate() { return licensePlate; }
+    public String getMake() { return make; }
+    public String getModel() { return model; }
+    public int getYear() { return year; }
+    public boolean isRented() { return isRented; }
+    public void setRented(boolean rented) { isRented = rented; }
+
+
+    public String toString() {
+        return year + " " + make + " " + model + " (" + licensePlate + ") - " +
+                (isRented ? "Rented" : "Available");
+    }
+}
+
+// Customer class
+class Customer {
+    private String id;
+    private String name;
+    private String phoneNumber;
+
+    public Customer(String id, String name, String phoneNumber) {
+        this.id = id;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+    }
+
+    // Getters
+    public String getId() { return id; }
+    public String getName() { return name; }
+    public String getPhoneNumber() { return phoneNumber; }
+
+    public String toString() {
+        return name + " (ID: " + id + ", Phone: " + phoneNumber + ")";
+    }
+}
+
+
+class RentalAgency {
+    private List<Car> cars;
+    private List<Customer> customers;
+    private List<String> transactions; // Simplified for this example
+
+    public RentalAgency() {
+        this.cars = new ArrayList<>();
+        this.customers = new ArrayList<>();
+        this.transactions = new ArrayList<>();
+    }
+
+    // Add a car
+    public void addCar(Car car) {
+        cars.add(car);
+    }
+
+    // Add a customer
+    public void addCustomer(Customer customer) {
+        customers.add(customer);
+    }
+
+    // Rent a car
+    public boolean rentCar(String licensePlate, String customerId) {
+        Car car = findCar(licensePlate);
+        Customer customer = findCustomer(customerId);
+
+        if (car != null && customer != null && !car.isRented()) {
+            car.setRented(true);
+            transactions.add(customer.getName() + " rented " + car.getMake() + " " + car.getModel());
+            return true;
+        }
+        return false;
+    }
+
+    // Return a car
+    public boolean returnCar(String licensePlate) {
+        Car car = findCar(licensePlate);
+        if (car != null && car.isRented()) {
+            car.setRented(false);
+            transactions.add(car.getMake() + " " + car.getModel() + " was returned.");
+            return true;
+        }
+        return false;
+    }
+
+  
+    private Car findCar(String licensePlate) {
+        for (Car car : cars) {
+            if (car.getLicensePlate().equals(licensePlate)) {
+                return car;
+            }
+        }
+        return null;
+    }
+
+    private Customer findCustomer(String customerId) {
+        for (Customer customer : customers) {
+            if (customer.getId().equals(customerId)) {
+                return customer;
+            }
+        }
+        return null;
+    }
+
+ 
+    public void displayAvailableCars() {
+        System.out.println("\nAvailable Cars:");
+        for (Car car : cars) {
+            if (!car.isRented()) {
+                System.out.println(car);
+            }
+        }
+    }
+
+    public void displayRentedCars() {
+        System.out.println("\nRented Cars:");
+        for (Car car : cars) {
+            if (car.isRented()) {
+                System.out.println(car);
+            }
+        }
+    }
+
+    public void displayCustomers() {
+        System.out.println("\nCustomers:");
+        for (Customer customer : customers) {
+            System.out.println(customer);
+        }
+    }
+
+    public void displayTransactions() {
+        System.out.println("\nRental Transactions:");
+        for (String transaction : transactions) {
+            System.out.println(transaction);
+        }
+    }
+}
+
+// Main class
+public class CarRentalSystem {
+    public static void main(String[] args) {
+        RentalAgency agency = new RentalAgency();
+
+        // Add cars
+        agency.addCar(new Car("ABC123", "Toyota", "Camry", 2020));
+        agency.addCar(new Car("XYZ789", "Honda", "hundai", 2021));
+        agency.addCar(new Car("DEF456", "Ford", "Mustang", 2019));
+
+        // Add customers
+        agency.addCustomer(new Customer("C001", "stephen kiai", "0796353332"));
+        agency.addCustomer(new Customer("C002", "Jane wambui", "0719159251"));
+
+        // Display initial state
+        System.out.println("=== Initial State ===");
+        agency.displayAvailableCars();
+        agency.displayCustomers();
+
+        // Rent a car
+        System.out.println("\n=== Renting a Car ===");
+        if (agency.rentCar("ABC123", "C001")) {
+            System.out.println("Rental successful!");
+        } else {
+            System.out.println("Rental failed.");
+        }
+
+        // Display current state
+        System.out.println("\n=== After Rental ===");
+        agency.displayAvailableCars();
+        agency.displayRentedCars();
+
+        // Return a car
+        System.out.println("\n=== Returning a Car ===");
+        if (agency.returnCar("ABC123")) {
+            System.out.println("Return successful!");
+        } else {
+            System.out.println("Return failed.");
+        }
+
+        // Display final
+        System.out.println("\n=== Final State ===");
+        agency.displayAvailableCars();
+        agency.displayRentedCars();
+        agency.displayTransactions();
+    }
+}
