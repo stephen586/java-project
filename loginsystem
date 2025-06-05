@@ -1,0 +1,46 @@
+package loginsystem;
+
+import java.util.Scanner;
+
+public class loginsystem{
+    // Predefined credentials
+    private static final String CORRECT_USERNAME = "admin";
+    private static final String CORRECT_PASSWORD = "password123";
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int attempts = 3;
+        boolean loggedIn = false;
+
+        System.out.println("=== Login System ===");
+        
+        while (attempts > 0 && !loggedIn) {
+            System.out.print("Enter username: ");
+            String username = scanner.nextLine();
+            
+            System.out.print("Enter password: ");
+           
+            String password = scanner.nextLine();
+ 
+            for (int i = 0; i < password.length(); i++) {
+                System.out.print("*");
+            }
+            System.out.println();
+            
+         
+            if (username.equals(CORRECT_USERNAME) && password.equals(CORRECT_PASSWORD)) {
+                loggedIn = true;
+                System.out.println("Login successful! Welcome, " + username + ".");
+            } else {
+                attempts--;
+                if (attempts > 0) {
+                    System.out.println("Invalid credentials. " + attempts + " attempts remaining.");
+                } else {
+                    System.out.println("No more attempts remaining. Access denied.");
+                }
+            }
+        }
+        
+        scanner.close();
+    }
+}
